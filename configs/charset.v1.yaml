@@ -1,0 +1,16 @@
+version: "1"
+
+groups:
+  consonants: "কখগঘঙচছজঝঞটঠডঢণতথদধনপফবভমযরলশষসহৎ"
+  consonants_with_nukta: "ড়ঢ়য়"
+  independent_vowels: "অআইঈউঊঋৠঌএঐওঔ"
+  vowel_signs: "ািীুূৃৄেৈোৌ"
+  diacritics: "্ঁংঃ়"
+  bengali_digits: "০১২৩৪৫৬৭৮৯"
+  ascii_digits: "0123456789"
+  ascii_uppercase: "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+  ascii_lowercase: "abcdefghijklmnopqrstuvwxyz"
+  currency_and_fractions: "৳৴৵৶৷৸৹"
+  punctuation: "।,.-/()[]:;'"
+  quotation: '"'
+  whitespace: " "

@@ -19,7 +19,11 @@ none of whom volunteered to be in a machine-learning corpus.
 For each batch record: who provided it, whether written permission exists, whether the individuals
 named were informed, and any restriction on publication or model release.
 
-## Text handling policy (fixed in story 1.2)
+## Text handling policy (fixed in story 1.3)
+
+Enforced in `lipikar/shuddhi/text.py`, configured in `configs/default.yaml` under `text:`, and
+covered by the adversarial tests in `tests/unit/test_text.py` (R20.9). Normalization happens once,
+at ingestion — never at comparison time.
 
 | Decision | Value | Rationale |
 |---|---|---|

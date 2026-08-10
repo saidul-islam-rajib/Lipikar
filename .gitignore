@@ -216,3 +216,57 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# ─────────────────────────────────────────────────────────────
+# Lipikar additions — see .bmad/rules/30-data-privacy.md
+# ─────────────────────────────────────────────────────────────
+
+# Deed data: real land deeds contain names, signatures, thumb impressions
+# and property identifiers. NEVER commit. Git history is permanent.
+#
+# Note the pattern: `data/` alone would exclude the directory itself, and git
+# cannot re-include a file whose parent directory is excluded — the .gitkeep
+# negation below would silently do nothing. Excluding the *contents* while
+# re-including directories keeps the folder skeleton in the repo.
+data/**
+!data/**/
+!data/**/.gitkeep
+
+# Images and PDFs anywhere except reviewed, redacted doc assets
+*.jpg
+*.jpeg
+*.png
+*.tif
+*.tiff
+*.bmp
+*.webp
+*.pdf
+!docs/assets/**
+
+# Model artifacts
+checkpoints/
+runs/
+outputs/
+*.pt
+*.pth
+*.ckpt
+*.onnx
+*.safetensors
+*.bin
+
+# Experiment tracking
+wandb/
+mlruns/
+lightning_logs/
+.tensorboard/
+
+# Local config and secrets
+.env
+.env.*
+!.env.example
+*.local.yaml
+*.local.yml
+
+# Annotation tool working state
+label-studio/
+escriptorium/

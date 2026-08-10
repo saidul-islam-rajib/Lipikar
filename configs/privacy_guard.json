@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "forbidden_prefixes": ["data/"],
+  "restricted_suffixes": [
+    ".jpg", ".jpeg", ".png", ".tif", ".tiff", ".bmp", ".webp", ".pdf"
+  ],
+  "allowed_image_prefixes": ["docs/assets/"],
+  "weight_suffixes": [
+    ".pt", ".pth", ".ckpt", ".onnx", ".safetensors", ".bin"
+  ],
+  "allowed_basenames": [".gitkeep", ".gitignore"],
+  "reasons": {
+    "forbidden_prefix": "deed data directory - never committed (R30.1)",
+    "restricted_suffix": "image outside an allowed prefix - real deed images may not be committed; use a redacted or synthetic sample (R30.2)",
+    "weight_suffix": "model weights - publish via the checkpoint registry with provenance and a memorization probe, not git (R40.9, R30.6)",
+    "epilogue": "Deed images contain names, signatures, and biometric thumb impressions. Git history is permanent. Unstage these files. If you believe an exception is warranted, it needs human sign-off recorded in docs/DATA.md."
+  }
+}

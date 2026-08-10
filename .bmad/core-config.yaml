@@ -1,0 +1,96 @@
+# Lipikar — BMAD core configuration
+# Single source of truth for where agents read and write artifacts.
+# Agents MUST resolve paths through this file rather than hardcoding them.
+
+project:
+  name: Lipikar
+  slug: lipikar
+  description: >
+    Handwritten Bengali document recognition for Bangladeshi land deeds (দলিল):
+    image restoration, line segmentation, HTR, lexicon-aware post-correction,
+    and structured field extraction with human-in-the-loop review.
+  domain: document-ai / handwritten-text-recognition
+  primary_language: python
+  license: MIT
+
+method:
+  version: "1.0"
+  flavour: bmad-adapted            # tailored to an ML/research project, not pure CRUD
+  cycle: plan -> shard -> story -> dev -> qa-gate -> deploy -> retro
+
+paths:
+  rules: .bmad/rules
+  agents: .bmad/agents
+  templates: .bmad/templates
+  checklists: .bmad/checklists
+  workflows: .bmad/workflows
+
+  prd: docs/prd.md
+  architecture: docs/architecture.md
+  epics: docs/epics
+  stories: docs/stories
+  qa_gates: docs/qa/gates
+  experiments: docs/experiments
+  data_statement: docs/DATA.md
+  model_card: docs/MODEL_CARD.md
+
+  source: lipikar
+  tests: tests
+  configs: configs
+
+# Files every agent loads before doing anything, no exceptions.
+always_load:
+  - .bmad/rules/00-global.md
+  - .bmad/rules/30-data-privacy.md
+
+# Files loaded by any agent that touches code, text, or model output.
+dev_load:
+  - .bmad/rules/10-coding-standards.md
+  - .bmad/rules/20-bengali-text.md
+  - .bmad/rules/40-ml-experiments.md
+  - .bmad/rules/50-definition-of-done.md
+  - .bmad/rules/70-configuration-and-strings.md
+
+# Files loaded by any agent that will write git history.
+git_load:
+  - .bmad/rules/60-git-and-commits.md
+
+# Commit identity. Enforced repo-locally; never overridden per-commit (R60.1).
+git:
+  author_name: Saidul Islam Rajib
+  author_email: 96372056+saidul-islam-rajib@users.noreply.github.com
+  ai_attribution: forbidden          # no Co-Authored-By: Claude, no "Generated with" (R60.2)
+  coauthor_trailer: only_real_humans # a trailer naming the author again credits nobody
+  deed_content_in_messages: forbidden # messages are public and not covered by .gitignore (R60.3)
+  branch_pattern: story/<id>-<slug>
+  protected_branches: [main]
+  agents_commit_unasked: false       # the human decides when history is written (R60.8)
+
+# Pipeline stages. Story IDs are namespaced by stage so ownership is unambiguous.
+stages:
+  kagoj:      { order: 1, role: image restoration (dewarp, deskew, denoise, binarize) }
+  binnas:     { order: 2, role: layout analysis and line segmentation }
+  shirorekha: { order: 3, role: line-level handwriting recognition (the ML core) }
+  shuddhi:    { order: 4, role: normalization, lexicon and language post-correction }
+  fard:       { order: 5, role: deed -> structured JSON field extraction }
+  nazir:      { order: 6, role: confidence surfacing and human verification review }
+
+# Quality bars enforced at the QA gate. Update deliberately, never silently.
+quality_gates:
+  metric_primary: grapheme_cer          # NFC, grapheme-cluster aware. See rules/20.
+  metric_secondary: [word_error_rate, field_exact_match]
+  baseline_cer: null                    # set by Story 1.x once the metric ships
+  target_cer_phase1: 0.20
+  target_cer_phase2: 0.10
+  min_test_coverage: 0.70
+  writer_disjoint_splits: true          # non-negotiable, see rules/40
+  human_review_required: true           # legal document — no autonomous output
+
+human_in_the_loop:
+  rationale: >
+    Output describes real property rights. A wrong dag number or name has legal
+    consequences. Every extracted field is a suggestion pending human sign-off.
+  never:
+    - present extracted fields as authoritative
+    - auto-commit real deed images or transcriptions to git
+    - train on data whose provenance and consent are unrecorded

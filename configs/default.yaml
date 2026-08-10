@@ -1,0 +1,25 @@
+text:
+  normalization_form: "NFC"
+  zero_width_codepoints: ["200C", "200D"]
+  danda_codepoint: "0964"
+
+binnas:
+  region_kinds: ["body", "annotation", "stamp", "thumbprint", "margin_measure", "slogan"]
+
+metrics:
+  worst_n: 10
+  percentiles: [90, 95]
+  word_separator: " "
+
+charset:
+  path: "charset.v1.yaml"
+  version: "1"
+  unknown_token: "<unk>"
+
+manifest:
+  hash_algorithm: "sha256"
+  schema_version: 1
+
+strings:
+  default_locale: "en"
+  locales: ["en", "bn"]

@@ -10,9 +10,13 @@ structured field extraction with human-in-the-loop review.
 
 ## Status
 
-Pre-development. The BMAD workflow scaffold, project rules, and planning skeletons are in place.
-No model exists; no metric has been measured yet. Current work: **Epic 001 — Foundation and
-measurement**, starting with story 1.1.
+**Epic 001 — Foundation and measurement** is implemented and awaiting QA gates. The measurement
+layer exists and is tested: grapheme-cluster CER/WER, the NFC and ZWJ/ZWNJ boundary, a versioned
+charset with logged unknowns, the frozen eval manifest, distribution reporting, typed configuration,
+and the `en`/`bn` string resources.
+
+No model exists and **no accuracy has been measured** — there is no corpus yet. What exists is the
+apparatus that will measure one correctly when there is.
 
 ## The problem
 
@@ -61,7 +65,7 @@ pip install -r requirements-dev.txt && pip install -e .
 pytest -q
 ```
 
-The packaging files arrive with story 1.1. The privacy guard works today:
+The privacy guard is stdlib-only and runs without any of the above installed:
 
 ```bash
 python scripts/check_no_sensitive_files.py --all

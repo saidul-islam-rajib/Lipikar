@@ -1,0 +1,12 @@
+common:
+  output:
+    assistive_notice: "Lipikar output is a suggestion awaiting human verification. Do not rely on it for any legal purpose without checking it against the original document."
+    unverified_badge: "Unverified"
+nazir:
+  review:
+    progress: "{done} of {total} fields verified"
+  field:
+    low_confidence_warning: "{field} was read with low confidence. Compare it with the original before accepting it."
+fard:
+  field:
+    needs_verification: "{field} must be verified against the original deed."

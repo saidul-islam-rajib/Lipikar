@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { strings } from "@/lib/strings";
 
 export function LogoutButton() {
   const router = useRouter();
@@ -16,7 +17,7 @@ export function LogoutButton() {
       onClick={() => void handleLogout()}
       className="text-sm text-stone-500 hover:text-stone-800 dark:text-stone-400 dark:hover:text-stone-100"
     >
-      Sign out
+      {strings.admin.signOut}
     </button>
   );
 }

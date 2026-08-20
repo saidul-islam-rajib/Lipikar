@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Noto_Sans_Bengali } from "next/font/google";
 import { JotaiRoot } from "@/components/JotaiRoot";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { strings } from "@/lib/strings";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -21,8 +22,8 @@ const notoSansBengali = Noto_Sans_Bengali({
 });
 
 export const metadata: Metadata = {
-  title: "Lipikar — deed transcription prototype",
-  description: "Upload a photo of a handwritten deed and get a draft transcription.",
+  title: strings.app.title,
+  description: strings.app.description,
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

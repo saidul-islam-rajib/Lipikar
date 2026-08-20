@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useAtom } from "jotai";
 import { providersAtom, selectedProviderAtom } from "@/store/atoms";
+import { strings } from "@/lib/strings";
 
 export function ProviderSelect() {
   const [providers, setProviders] = useAtom(providersAtom);
@@ -31,7 +32,7 @@ export function ProviderSelect() {
   return (
     <div>
       <label className="mb-2 block text-sm font-medium text-stone-700 dark:text-stone-300">
-        AI provider
+        {strings.providerSelect.label}
       </label>
       <div className="flex flex-wrap gap-2">
         {providers.map((provider) => (
@@ -40,7 +41,7 @@ export function ProviderSelect() {
             type="button"
             disabled={!provider.configured}
             onClick={() => setSelected(provider.id)}
-            title={provider.configured ? undefined : "No API key configured on the server"}
+            title={provider.configured ? undefined : strings.providerSelect.unconfiguredHint}
             className={`rounded-full border px-4 py-1.5 text-sm transition ${
               selected === provider.id
                 ? "border-stone-900 bg-stone-900 text-white dark:border-stone-100 dark:bg-stone-100 dark:text-stone-900"
@@ -51,7 +52,7 @@ export function ProviderSelect() {
           </button>
         ))}
         {providers.length === 0 && (
-          <p className="text-sm text-stone-400">Loading providers…</p>
+          <p className="text-sm text-stone-400">{strings.providerSelect.loading}</p>
         )}
       </div>
     </div>

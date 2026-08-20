@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { strings } from "@/lib/strings";
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -24,12 +25,12 @@ export default function AdminLoginPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error ?? "Login failed.");
+        throw new Error(data.error ?? strings.adminLogin.genericError);
       }
 
       router.push("/admin");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Login failed.");
+      setError(err instanceof Error ? err.message : strings.adminLogin.genericError);
     } finally {
       setLoading(false);
     }
@@ -37,11 +38,13 @@ export default function AdminLoginPage() {
 
   return (
     <div className="mx-auto flex max-w-sm flex-col justify-center px-6 py-20">
-      <h1 className="mb-6 text-xl font-semibold text-stone-900 dark:text-stone-100">Admin sign in</h1>
+      <h1 className="mb-6 text-xl font-semibold text-stone-900 dark:text-stone-100">
+        {strings.adminLogin.heading}
+      </h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label htmlFor="username" className="mb-1 block text-sm text-stone-600 dark:text-stone-400">
-            Username
+            {strings.adminLogin.username}
           </label>
           <input
             id="username"
@@ -53,7 +56,7 @@ export default function AdminLoginPage() {
         </div>
         <div>
           <label htmlFor="password" className="mb-1 block text-sm text-stone-600 dark:text-stone-400">
-            Password
+            {strings.adminLogin.password}
           </label>
           <input
             id="password"
@@ -70,7 +73,7 @@ export default function AdminLoginPage() {
           disabled={loading}
           className="w-full rounded-lg bg-stone-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-stone-700 disabled:opacity-40 dark:bg-stone-100 dark:text-stone-900"
         >
-          {loading ? "Signing in…" : "Sign in"}
+          {loading ? strings.adminLogin.signingIn : strings.adminLogin.signIn}
         </button>
       </form>
     </div>

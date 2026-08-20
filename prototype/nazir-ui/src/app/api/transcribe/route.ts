@@ -3,6 +3,7 @@ import { z } from "zod";
 import { getProvider } from "@/lib/providers";
 import type { ProviderId } from "@/lib/providers/types";
 import { recordFailure, recordRequest } from "@/lib/stats";
+import { strings } from "@/lib/strings";
 
 const MAX_IMAGE_BYTES = 8 * 1024 * 1024;
 const MAX_BASE64_LENGTH = Math.ceil(MAX_IMAGE_BYTES / 3) * 4;
@@ -20,10 +21,7 @@ export async function POST(request: Request) {
   const parsed = requestSchema.safeParse(body);
 
   if (!parsed.success) {
-    return NextResponse.json(
-      { error: "Invalid request. Expected providerId, mimeType, and imageBase64 (max 8MB)." },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: strings.api.invalidTranscribeRequest }, { status: 400 });
   }
 
   const { providerId, mimeType, imageBase64 } = parsed.data;
@@ -31,7 +29,7 @@ export async function POST(request: Request) {
 
   if (!provider.isConfigured()) {
     return NextResponse.json(
-      { error: `${provider.label} is not configured on this server. Set its API key in .env.local.` },
+      { error: strings.api.providerNotConfigured(provider.label) },
       { status: 503 },
     );
   }
@@ -42,7 +40,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ result });
   } catch (error) {
     recordFailure();
-    const message = error instanceof Error ? error.message : "Transcription failed.";
+    const message = error instanceof Error ? error.message : strings.api.transcriptionFailed;
     return NextResponse.json({ error: message }, { status: 502 });
   }
 }

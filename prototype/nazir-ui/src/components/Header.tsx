@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Logo } from "./Logo";
+import { strings } from "@/lib/strings";
 
 export function Header() {
   return (
@@ -8,17 +9,17 @@ export function Header() {
         <Link href="/" className="flex items-center gap-3">
           <Logo />
           <div>
-            <p className="text-base font-semibold text-stone-900 dark:text-stone-100">Lipikar</p>
-            <p className="text-xs text-stone-500 dark:text-stone-400">
-              দলিল transcription prototype
+            <p className="text-base font-semibold text-stone-900 dark:text-stone-100">
+              {strings.header.appName}
             </p>
+            <p className="text-xs text-stone-500 dark:text-stone-400">{strings.header.tagline}</p>
           </div>
         </Link>
         <Link
           href="/admin"
           className="text-sm text-stone-500 transition hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100"
         >
-          Admin
+          {strings.header.adminLink}
         </Link>
       </div>
     </header>

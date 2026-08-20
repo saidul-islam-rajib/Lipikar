@@ -9,6 +9,7 @@ import {
   statusAtom,
   uploadedImageAtom,
 } from "@/store/atoms";
+import { strings } from "@/lib/strings";
 
 const MAX_FILE_BYTES = 8 * 1024 * 1024;
 const ACCEPTED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
@@ -41,11 +42,11 @@ export function UploadCard() {
     if (!file) return;
 
     if (!ACCEPTED_TYPES.includes(file.type)) {
-      setLocalError("Please choose a JPEG, PNG, WebP, or GIF image.");
+      setLocalError(strings.upload.invalidType);
       return;
     }
     if (file.size > MAX_FILE_BYTES) {
-      setLocalError("Image is larger than 8MB. Please choose a smaller photo.");
+      setLocalError(strings.upload.tooLarge);
       return;
     }
 
@@ -75,13 +76,13 @@ export function UploadCard() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error ?? "Transcription failed.");
+        throw new Error(data.error ?? strings.upload.genericError);
       }
 
       setResult(data.result);
       setStatus("done");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Transcription failed.");
+      setError(err instanceof Error ? err.message : strings.upload.genericError);
       setStatus("error");
     }
   }
@@ -109,15 +110,15 @@ export function UploadCard() {
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={image.previewUrl}
-            alt="Selected deed photo"
+            alt={strings.upload.previewAlt}
             className="max-h-64 rounded-md object-contain"
           />
         ) : (
           <>
             <p className="text-sm font-medium text-stone-700 dark:text-stone-300">
-              Click to choose a photo, or drag one here
+              {strings.upload.dropPrompt}
             </p>
-            <p className="text-xs text-stone-400">JPEG, PNG, WebP, or GIF · up to 8MB</p>
+            <p className="text-xs text-stone-400">{strings.upload.acceptedFormats}</p>
           </>
         )}
         <input
@@ -139,7 +140,7 @@ export function UploadCard() {
           disabled={!image || status === "loading"}
           className="rounded-lg bg-stone-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-stone-700 disabled:cursor-not-allowed disabled:opacity-40 dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-white"
         >
-          {status === "loading" ? "Transcribing…" : "Transcribe"}
+          {status === "loading" ? strings.upload.transcribing : strings.upload.transcribe}
         </button>
         {image && (
           <button
@@ -147,7 +148,7 @@ export function UploadCard() {
             onClick={clearImage}
             className="text-sm text-stone-500 hover:text-stone-800 dark:text-stone-400 dark:hover:text-stone-100"
           >
-            Clear
+            {strings.upload.clear}
           </button>
         )}
       </div>

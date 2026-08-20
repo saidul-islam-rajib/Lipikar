@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useAtomValue } from "jotai";
 import { errorMessageAtom, resultAtom, statusAtom } from "@/store/atoms";
 import { AssistiveNotice } from "./AssistiveNotice";
+import { strings } from "@/lib/strings";
 
 export function ResultCard() {
   const result = useAtomValue(resultAtom);
@@ -16,7 +17,7 @@ export function ResultCard() {
   if (status === "error") {
     return (
       <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-300">
-        {error ?? "Something went wrong."}
+        {error ?? strings.result.genericError}
       </div>
     );
   }
@@ -24,7 +25,7 @@ export function ResultCard() {
   if (status === "loading") {
     return (
       <div className="rounded-xl border border-stone-200 bg-white p-6 text-sm text-stone-500 dark:border-stone-800 dark:bg-stone-900">
-        Reading the photo…
+        {strings.result.reading}
       </div>
     );
   }
@@ -37,7 +38,7 @@ export function ResultCard() {
       <div className="rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900">
         <div className="mb-3 flex items-center justify-between">
           <p className="text-xs uppercase tracking-wide text-stone-400">
-            Draft transcription · {result.modelId}
+            {strings.result.draftLabel(result.modelId)}
           </p>
           <button
             type="button"
@@ -48,11 +49,11 @@ export function ResultCard() {
             }}
             className="text-xs text-stone-500 hover:text-stone-800 dark:text-stone-400 dark:hover:text-stone-100"
           >
-            {copied ? "Copied" : "Copy text"}
+            {copied ? strings.result.copied : strings.result.copy}
           </button>
         </div>
         <p className="whitespace-pre-wrap font-bengali text-base leading-relaxed text-stone-900 dark:text-stone-100">
-          {result.text || "No text was detected in this image."}
+          {result.text || strings.result.empty}
         </p>
       </div>
     </div>

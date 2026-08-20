@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { timingSafeEqual } from "crypto";
 import { z } from "zod";
 import { ADMIN_SESSION_COOKIE, ADMIN_SESSION_MAX_AGE_SECONDS, createAdminSessionToken } from "@/lib/session";
+import { strings } from "@/lib/strings";
 
 const loginSchema = z.object({
   username: z.string().min(1),
@@ -20,24 +21,21 @@ export async function POST(request: Request) {
   const parsed = loginSchema.safeParse(body);
 
   if (!parsed.success) {
-    return NextResponse.json({ error: "Username and password are required." }, { status: 400 });
+    return NextResponse.json({ error: strings.api.loginFieldsRequired }, { status: 400 });
   }
 
   const adminUsername = process.env.ADMIN_USERNAME;
   const adminPassword = process.env.ADMIN_PASSWORD;
 
   if (!adminUsername || !adminPassword) {
-    return NextResponse.json(
-      { error: "Admin login is not configured on this server." },
-      { status: 503 },
-    );
+    return NextResponse.json({ error: strings.api.adminLoginNotConfigured }, { status: 503 });
   }
 
   const { username, password } = parsed.data;
   const valid = safeEqual(username, adminUsername) && safeEqual(password, adminPassword);
 
   if (!valid) {
-    return NextResponse.json({ error: "Invalid username or password." }, { status: 401 });
+    return NextResponse.json({ error: strings.api.invalidCredentials }, { status: 401 });
   }
 
   const response = NextResponse.json({ ok: true });

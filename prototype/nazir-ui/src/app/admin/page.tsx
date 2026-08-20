@@ -6,6 +6,7 @@ import { getActiveProviderId } from "@/lib/activeProvider";
 import { getStats } from "@/lib/stats";
 import { LogoutButton } from "@/components/LogoutButton";
 import { ActiveProviderControl } from "@/components/ActiveProviderControl";
+import { strings } from "@/lib/strings";
 
 export default async function AdminPage() {
   const cookieStore = await cookies();
@@ -23,13 +24,15 @@ export default async function AdminPage() {
   return (
     <div className="mx-auto max-w-3xl px-6 py-10">
       <div className="mb-8 flex items-center justify-between">
-        <h1 className="text-2xl font-semibold text-stone-900 dark:text-stone-100">Admin</h1>
+        <h1 className="text-2xl font-semibold text-stone-900 dark:text-stone-100">
+          {strings.admin.heading}
+        </h1>
         <LogoutButton />
       </div>
 
       <section className="mb-8 rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900">
         <h2 className="mb-4 text-sm font-medium uppercase tracking-wide text-stone-400">
-          Provider configuration
+          {strings.admin.providerConfigHeading}
         </h2>
         <ul className="divide-y divide-stone-100 dark:divide-stone-800">
           {providers.map((provider) => (
@@ -42,53 +45,47 @@ export default async function AdminPage() {
                     : "rounded-full bg-stone-100 px-2 py-0.5 text-xs text-stone-500 dark:bg-stone-800 dark:text-stone-400"
                 }
               >
-                {provider.configured ? "Key configured" : "No key set"}
+                {provider.configured ? strings.admin.keyConfigured : strings.admin.noKeySet}
               </span>
             </li>
           ))}
         </ul>
-        <p className="mt-3 text-xs text-stone-400">
-          Set API keys as environment variables on the server (see env.template.txt). No key value
-          is ever shown here.
-        </p>
+        <p className="mt-3 text-xs text-stone-400">{strings.admin.keyHint}</p>
       </section>
 
       <section className="mb-8 rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900">
         <h2 className="mb-4 text-sm font-medium uppercase tracking-wide text-stone-400">
-          Active provider
+          {strings.admin.activeProviderHeading}
         </h2>
         <ActiveProviderControl providers={providers} activeProviderId={activeProviderId} />
       </section>
 
       <section className="rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900">
         <h2 className="mb-4 text-sm font-medium uppercase tracking-wide text-stone-400">
-          Session usage
+          {strings.admin.sessionUsageHeading}
         </h2>
-        <p className="text-xs text-stone-400">
-          Counts only, reset on server restart. No uploaded image or transcription text is ever
-          stored.
-        </p>
+        <p className="text-xs text-stone-400">{strings.admin.sessionUsageHint}</p>
         <dl className="mt-4 grid grid-cols-2 gap-4 text-sm sm:grid-cols-4">
           <div>
-            <dt className="text-stone-400">Uptime</dt>
+            <dt className="text-stone-400">{strings.admin.uptime}</dt>
             <dd className="text-lg font-semibold text-stone-900 dark:text-stone-100">
               {uptimeMinutes}m
             </dd>
           </div>
           <div>
-            <dt className="text-stone-400">Requests</dt>
+            <dt className="text-stone-400">{strings.admin.requests}</dt>
             <dd className="text-lg font-semibold text-stone-900 dark:text-stone-100">
               {stats.totalRequests}
             </dd>
           </div>
           <div>
-            <dt className="text-stone-400">Failures</dt>
+            <dt className="text-stone-400">{strings.admin.failures}</dt>
             <dd className="text-lg font-semibold text-stone-900 dark:text-stone-100">
               {stats.totalFailures}
             </dd>
           </div>
           <div>
-            <dt className="text-stone-400">By provider</dt>
+            <dt className="text-stone-400">{strings.admin.byProvider}</dt>
             <dd className="text-sm text-stone-700 dark:text-stone-300">
               {Object.entries(stats.byProvider)
                 .map(([id, count]) => `${id}: ${count}`)

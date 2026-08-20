@@ -1,3 +1,5 @@
+import { strings } from "@/lib/strings";
+
 export function Logo({ size = 36 }: { size?: number }) {
   return (
     <svg
@@ -5,7 +7,7 @@ export function Logo({ size = 36 }: { size?: number }) {
       height={size}
       viewBox="0 0 64 64"
       role="img"
-      aria-label="Lipikar"
+      aria-label={strings.header.appName}
       className="shrink-0"
     >
       <rect width="64" height="64" rx="16" fill="#1c1917" />

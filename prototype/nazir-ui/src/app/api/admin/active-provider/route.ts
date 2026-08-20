@@ -5,6 +5,7 @@ import { ADMIN_SESSION_COOKIE, verifyAdminSessionToken } from "@/lib/session";
 import { getProvider } from "@/lib/providers";
 import { getActiveProviderId, setActiveProviderId } from "@/lib/activeProvider";
 import type { ProviderId } from "@/lib/providers/types";
+import { strings } from "@/lib/strings";
 
 const bodySchema = z.object({
   providerId: z.enum(["claude", "openai", "gemini"] satisfies readonly ProviderId[]),
@@ -21,19 +22,19 @@ export async function GET() {
 
 export async function POST(request: Request) {
   if (!(await requireAdmin())) {
-    return NextResponse.json({ error: "Not signed in." }, { status: 401 });
+    return NextResponse.json({ error: strings.api.notSignedIn }, { status: 401 });
   }
 
   const body = await request.json().catch(() => null);
   const parsed = bodySchema.safeParse(body);
   if (!parsed.success) {
-    return NextResponse.json({ error: "providerId is required." }, { status: 400 });
+    return NextResponse.json({ error: strings.api.providerIdRequired }, { status: 400 });
   }
 
   const provider = getProvider(parsed.data.providerId);
   if (!provider.isConfigured()) {
     return NextResponse.json(
-      { error: `${provider.label} has no API key configured, so it cannot be made active.` },
+      { error: strings.api.cannotActivateUnconfigured(provider.label) },
       { status: 400 },
     );
   }

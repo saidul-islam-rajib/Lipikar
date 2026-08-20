@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { ProviderId, ProviderInfo } from "@/lib/providers/types";
+import { strings } from "@/lib/strings";
 
 export function ActiveProviderControl({
   providers,
@@ -29,12 +30,12 @@ export function ActiveProviderControl({
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error ?? "Could not change the active provider.");
+        throw new Error(data.error ?? strings.admin.activeProviderGenericError);
       }
 
       router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not change the active provider.");
+      setError(err instanceof Error ? err.message : strings.admin.activeProviderGenericError);
     } finally {
       setPending(null);
     }
@@ -42,10 +43,7 @@ export function ActiveProviderControl({
 
   return (
     <div>
-      <p className="mb-2 text-xs text-stone-400">
-        Only one provider is active at a time. The active provider is what the public upload page
-        uses by default.
-      </p>
+      <p className="mb-2 text-xs text-stone-400">{strings.admin.activeProviderHint}</p>
       <div className="flex flex-wrap gap-2">
         {providers.map((provider) => {
           const isActive = provider.id === activeProviderId;
@@ -55,7 +53,7 @@ export function ActiveProviderControl({
               type="button"
               disabled={!provider.configured || pending !== null}
               onClick={() => void activate(provider.id)}
-              title={provider.configured ? undefined : "No API key configured on the server"}
+              title={provider.configured ? undefined : strings.providerSelect.unconfiguredHint}
               className={`rounded-full border px-4 py-1.5 text-sm transition ${
                 isActive
                   ? "border-emerald-600 bg-emerald-600 text-white"

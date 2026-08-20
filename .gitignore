@@ -270,3 +270,8 @@ lightning_logs/
 # Annotation tool working state
 label-studio/
 escriptorium/
+
+# The nazir-ui prototype (prototype/nazir-ui) has its own src/lib/, a standard
+# JS/TS convention. The Python packaging pattern `lib/` above would otherwise
+# swallow it unintentionally, since it is unanchored and matches by name alone.
+!prototype/nazir-ui/src/lib/

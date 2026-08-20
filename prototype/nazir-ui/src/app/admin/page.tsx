@@ -3,9 +3,11 @@ import { redirect } from "next/navigation";
 import { ADMIN_SESSION_COOKIE, verifyAdminSessionToken } from "@/lib/session";
 import { listProviders } from "@/lib/providers";
 import { getActiveProviderId } from "@/lib/activeProvider";
+import { getEffectiveModel, hasModelOverride } from "@/lib/modelOverrides";
 import { getStats } from "@/lib/stats";
 import { LogoutButton } from "@/components/LogoutButton";
 import { ActiveProviderControl } from "@/components/ActiveProviderControl";
+import { ProviderConfigList } from "@/components/ProviderConfigList";
 import { strings } from "@/lib/strings";
 
 export default async function AdminPage() {
@@ -18,6 +20,11 @@ export default async function AdminPage() {
 
   const providers = listProviders();
   const activeProviderId = getActiveProviderId();
+  const providerRows = providers.map((provider) => ({
+    ...provider,
+    model: getEffectiveModel(provider.id),
+    isOverridden: hasModelOverride(provider.id),
+  }));
   const stats = getStats();
   const uptimeMinutes = stats.uptimeMinutes;
 
@@ -34,23 +41,7 @@ export default async function AdminPage() {
         <h2 className="mb-4 text-sm font-medium uppercase tracking-wide text-stone-400">
           {strings.admin.providerConfigHeading}
         </h2>
-        <ul className="divide-y divide-stone-100 dark:divide-stone-800">
-          {providers.map((provider) => (
-            <li key={provider.id} className="flex items-center justify-between py-2 text-sm">
-              <span className="text-stone-700 dark:text-stone-300">{provider.label}</span>
-              <span
-                className={
-                  provider.configured
-                    ? "rounded-full bg-emerald-100 px-2 py-0.5 text-xs text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400"
-                    : "rounded-full bg-stone-100 px-2 py-0.5 text-xs text-stone-500 dark:bg-stone-800 dark:text-stone-400"
-                }
-              >
-                {provider.configured ? strings.admin.keyConfigured : strings.admin.noKeySet}
-              </span>
-            </li>
-          ))}
-        </ul>
-        <p className="mt-3 text-xs text-stone-400">{strings.admin.keyHint}</p>
+        <ProviderConfigList rows={providerRows} />
       </section>
 
       <section className="mb-8 rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900">

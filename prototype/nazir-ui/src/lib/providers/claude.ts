@@ -1,8 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import type { VisionProvider, TranscriptionResult } from "./types";
 import { TRANSCRIPTION_PROMPT } from "./types";
-
-const DEFAULT_MODEL = "claude-sonnet-5";
+import { getEffectiveModel } from "@/lib/modelOverrides";
 
 function client(): Anthropic {
   return new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
@@ -17,7 +16,7 @@ export const claudeProvider: VisionProvider = {
   },
 
   async transcribe(imageBase64, mimeType): Promise<TranscriptionResult> {
-    const modelId = process.env.ANTHROPIC_MODEL || DEFAULT_MODEL;
+    const modelId = getEffectiveModel("claude");
 
     const response = await client().messages.create({
       model: modelId,

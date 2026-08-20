@@ -74,6 +74,11 @@ export const strings = {
     activeProviderHint:
       "Only one provider is active at a time. The active provider is what the public upload page uses by default.",
     activeProviderGenericError: "Could not change the active provider.",
+    modelLabel: "Model",
+    modelSave: "Save",
+    modelReset: "Reset to default",
+    modelOverridden: "Overridden",
+    modelGenericError: "Could not update the model.",
     sessionUsageHeading: "Session usage",
     sessionUsageHint:
       "Counts only, reset on server restart. No uploaded image or transcription text is ever stored.",
@@ -94,6 +99,7 @@ export const strings = {
     invalidCredentials: "Invalid username or password.",
     notSignedIn: "Not signed in.",
     providerIdRequired: "providerId is required.",
+    modelIdRequired: "providerId and modelId are required.",
     cannotActivateUnconfigured: (label: string) =>
       `${label} has no API key configured, so it cannot be made active.`,
   },

@@ -1,8 +1,7 @@
 import OpenAI from "openai";
 import type { VisionProvider, TranscriptionResult } from "./types";
 import { TRANSCRIPTION_PROMPT } from "./types";
-
-const DEFAULT_MODEL = "gpt-4o";
+import { getEffectiveModel } from "@/lib/modelOverrides";
 
 function client(): OpenAI {
   return new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
@@ -17,7 +16,7 @@ export const openaiProvider: VisionProvider = {
   },
 
   async transcribe(imageBase64, mimeType): Promise<TranscriptionResult> {
-    const modelId = process.env.OPENAI_MODEL || DEFAULT_MODEL;
+    const modelId = getEffectiveModel("openai");
 
     const response = await client().chat.completions.create({
       model: modelId,

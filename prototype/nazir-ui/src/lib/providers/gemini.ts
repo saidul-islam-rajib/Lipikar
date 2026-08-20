@@ -1,8 +1,7 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import type { VisionProvider, TranscriptionResult } from "./types";
 import { TRANSCRIPTION_PROMPT } from "./types";
-
-const DEFAULT_MODEL = "gemini-3.6-flash";
+import { getEffectiveModel } from "@/lib/modelOverrides";
 
 function client(): GoogleGenerativeAI {
   return new GoogleGenerativeAI(process.env.GEMINI_API_KEY ?? "");
@@ -17,7 +16,7 @@ export const geminiProvider: VisionProvider = {
   },
 
   async transcribe(imageBase64, mimeType): Promise<TranscriptionResult> {
-    const modelId = process.env.GEMINI_MODEL || DEFAULT_MODEL;
+    const modelId = getEffectiveModel("gemini");
     const model = client().getGenerativeModel({ model: modelId });
 
     const result = await model.generateContent([

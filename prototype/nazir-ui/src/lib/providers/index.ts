@@ -21,12 +21,4 @@ export function getProvider(id: ProviderId): VisionProvider {
   return registry[id];
 }
 
-export function defaultProviderId(): ProviderId {
-  const configured = process.env.DEFAULT_PROVIDER as ProviderId | undefined;
-  if (configured && configured in registry) {
-    return configured;
-  }
-  return "claude";
-}
-
 export type { ProviderId, ProviderInfo, TranscriptionResult, VisionProvider } from "./types";

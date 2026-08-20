@@ -2,8 +2,10 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { ADMIN_SESSION_COOKIE, verifyAdminSessionToken } from "@/lib/session";
 import { listProviders } from "@/lib/providers";
+import { getActiveProviderId } from "@/lib/activeProvider";
 import { getStats } from "@/lib/stats";
 import { LogoutButton } from "@/components/LogoutButton";
+import { ActiveProviderControl } from "@/components/ActiveProviderControl";
 
 export default async function AdminPage() {
   const cookieStore = await cookies();
@@ -14,6 +16,7 @@ export default async function AdminPage() {
   }
 
   const providers = listProviders();
+  const activeProviderId = getActiveProviderId();
   const stats = getStats();
   const uptimeMinutes = stats.uptimeMinutes;
 
@@ -45,9 +48,16 @@ export default async function AdminPage() {
           ))}
         </ul>
         <p className="mt-3 text-xs text-stone-400">
-          Set API keys as environment variables on the server (see .env.example). No key value is
-          ever shown here.
+          Set API keys as environment variables on the server (see env.template.txt). No key value
+          is ever shown here.
         </p>
+      </section>
+
+      <section className="mb-8 rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900">
+        <h2 className="mb-4 text-sm font-medium uppercase tracking-wide text-stone-400">
+          Active provider
+        </h2>
+        <ActiveProviderControl providers={providers} activeProviderId={activeProviderId} />
       </section>
 
       <section className="rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900">

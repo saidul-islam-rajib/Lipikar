@@ -104,6 +104,6 @@ def test_missing_default_layer_fails_closed(tmp_path: Path) -> None:
 
 def test_repository_configuration_loads(config: AppConfig) -> None:
     assert config.text.normalization_form == "NFC"
-    assert config.charset.unknown_token
+    assert config.charset.unknown_codepoint == "FFFD"
     assert config.metrics.worst_n > 0
     assert "body" in config.binnas.region_kinds

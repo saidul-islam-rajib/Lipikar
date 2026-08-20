@@ -14,7 +14,8 @@ metrics:
 charset:
   path: "charset.v1.yaml"
   version: "1"
-  unknown_token: "<unk>"
+  unknown_codepoint: "FFFD"
+  unknown_label: "<unk>"
 
 manifest:
   hash_algorithm: "sha256"

@@ -7,11 +7,15 @@ import pytest
 from lipikar.config import AppConfig, load_config
 from lipikar.evaluation.manifest import ManifestEntry, build_manifest, load_manifest, write_manifest
 from lipikar.shirorekha.charset import decode, encode, load_charset
-from lipikar.shuddhi.metrics import grapheme_cer
+from lipikar.shuddhi.metrics import grapheme_cer, grapheme_clusters
 from lipikar.shuddhi.reporting import Sample, summarize
 from lipikar.shuddhi.text import normalize
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
+
+LINE_WITH_ONE_UNSUPPORTED_CHARACTER = "মৌজা ৺ঢাকা"
+LINE_CLUSTERS = 6
+UNSUPPORTED_CLUSTERS = 1
 
 REFERENCES = {
     "page_0001": "দাগ ১২৩",
@@ -35,6 +39,16 @@ def test_text_survives_the_charset_round_trip(app_config: AppConfig) -> None:
     for reference in REFERENCES.values():
         normalized = normalize(reference, app_config.text)
         assert decode(encode(normalized, charset), charset) == normalized
+
+
+def test_one_unknown_character_costs_one_cluster(app_config: AppConfig) -> None:
+    charset = load_charset(app_config.charset, REPO_ROOT / "configs", app_config.text)
+    reference = normalize(LINE_WITH_ONE_UNSUPPORTED_CHARACTER, app_config.text)
+    decoded = decode(encode(reference, charset), charset)
+
+    assert len(grapheme_clusters(reference)) == LINE_CLUSTERS
+    assert len(grapheme_clusters(decoded)) == LINE_CLUSTERS
+    assert grapheme_cer(reference, decoded) == pytest.approx(UNSUPPORTED_CLUSTERS / LINE_CLUSTERS)
 
 
 def test_scoring_a_frozen_eval_set_produces_a_distribution(app_config: AppConfig) -> None:

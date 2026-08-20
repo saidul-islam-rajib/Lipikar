@@ -23,7 +23,12 @@ def normalize(text: str, config: TextConfig) -> str:
 
 def danda(config: TextConfig) -> str:
     """The Bengali sentence terminator । — never an ASCII full stop (R20.5)."""
-    return _character(config.danda_codepoint)
+    return character_from_codepoint(config.danda_codepoint)
+
+
+def character_from_codepoint(codepoint: str) -> str:
+    """The character a hex codepoint string names — the form configs use for exotic characters."""
+    return chr(int(codepoint, 16))
 
 
 def _form(config: TextConfig) -> NormalizationForm:
@@ -34,7 +39,3 @@ def _form(config: TextConfig) -> NormalizationForm:
 
 def _zero_width_ordinals(config: TextConfig) -> tuple[int, ...]:
     return tuple(int(codepoint, 16) for codepoint in config.zero_width_codepoints)
-
-
-def _character(codepoint: str) -> str:
-    return chr(int(codepoint, 16))

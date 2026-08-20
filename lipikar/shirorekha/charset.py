@@ -12,7 +12,7 @@ from typing import Any
 import yaml
 
 from lipikar.config import CharsetConfig, TextConfig
-from lipikar.shuddhi.text import normalize
+from lipikar.shuddhi.text import character_from_codepoint, normalize
 
 UNKNOWN_INDEX = 0
 
@@ -27,6 +27,7 @@ class CharsetError(Exception):
 class Charset:
     version: str
     unknown_token: str
+    unknown_label: str
     symbols: tuple[str, ...]
     index: Mapping[str, int]
 
@@ -44,24 +45,33 @@ def load_charset(config: CharsetConfig, config_dir: Path, text_config: TextConfi
         raise CharsetError(
             f"charset version mismatch: file has {version!r}, config wants {config.version!r}"
         )
+    unknown_token = _unknown_token(config.unknown_codepoint)
     symbols = _collect(document.get("groups"), text_config, path)
-    ordered = (config.unknown_token, *symbols)
+    if unknown_token in symbols:
+        raise CharsetError(
+            f"unknown token U+{ord(unknown_token):04X} is also a charset member: {path}"
+        )
+    ordered = (unknown_token, *symbols)
     return Charset(
         version=config.version,
-        unknown_token=config.unknown_token,
+        unknown_token=unknown_token,
+        unknown_label=config.unknown_label,
         symbols=ordered,
         index=MappingProxyType({symbol: position for position, symbol in enumerate(ordered)}),
     )
 
 
 def encode(text: str, charset: Charset) -> tuple[int, ...]:
-    """Map to alphabet indices; unknown characters become the unknown token and are logged."""
+    """Map to alphabet indices. Input must already be normalized (R20.1); unknowns are logged."""
     encoded: list[int] = []
     for character in text:
         position = charset.index.get(character)
         if position is None:
             logger.warning(
-                "character U+%04X is outside charset v%s", ord(character), charset.version
+                "character U+%04X is outside charset v%s, encoded as %s",
+                ord(character),
+                charset.version,
+                charset.unknown_label,
             )
             encoded.append(UNKNOWN_INDEX)
         else:
@@ -70,10 +80,19 @@ def encode(text: str, charset: Charset) -> tuple[int, ...]:
 
 
 def decode(indices: Sequence[int], charset: Charset) -> str:
+    """Render indices as text; the unknown index costs one grapheme cluster, never more (R20.2)."""
     for position in indices:
         if position < 0 or position >= len(charset.symbols):
             raise CharsetError(f"index {position} is outside charset v{charset.version}")
     return "".join(charset.symbols[position] for position in indices)
+
+
+def _unknown_token(codepoint: str) -> str:
+    """One codepoint, so an unrecognised character scores as one cluster and not as a tag."""
+    try:
+        return character_from_codepoint(codepoint)
+    except ValueError as error:
+        raise CharsetError(f"unknown token is not a hex codepoint: {codepoint!r}") from error
 
 
 def _collect(groups: Any, text_config: TextConfig, path: Path) -> tuple[str, ...]:

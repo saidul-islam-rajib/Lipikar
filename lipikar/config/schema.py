@@ -28,7 +28,8 @@ class MetricsConfig:
 class CharsetConfig:
     path: str
     version: str
-    unknown_token: str
+    unknown_codepoint: str
+    unknown_label: str
 
 
 @dataclass(frozen=True)
